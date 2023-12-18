@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Rocketship : MonoBehaviour
-{    
+{
+    float mainThrust = 2000f;
+    float rotationThrust = 500f;
 
-    Rigidbody myRigidBody;
+    Rigidbody myRigidBody;// gravity effect
     // Start is called before the first frame update
     void Start()
     {
@@ -20,17 +22,19 @@ public class Rocketship : MonoBehaviour
 
     private void RocketMovement()
     {
+        float rotationSpeed = Time.deltaTime * rotationThrust;
+
         if (Input.GetKey(KeyCode.Space))
         {
-            myRigidBody.AddRelativeForce(Vector3.up);
+            myRigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime); // it adds the force relative to the way our coordinate system is facing.
         }
         if (Input.GetKey(KeyCode.A))
         {
-            print("Turning left");
+            transform.Rotate(Vector3.forward * rotationSpeed); // we now have the time between each frame and no matter the flucutation the time frame will be same  
         }
         if (Input.GetKey(KeyCode.D))
         {
-            print("Turning right");
+            transform.Rotate(-Vector3.forward * rotationSpeed);
         }
     }
 }
