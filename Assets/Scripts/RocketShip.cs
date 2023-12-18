@@ -26,19 +26,28 @@ public class Rocketship : MonoBehaviour
     private void RocketMovement()
     {
         float rotationSpeed = Time.deltaTime * rotationThrust;
+        Thrusting();
+        Rotating(rotationSpeed);
+    }
 
+    private void Thrusting()
+    {
         if (Input.GetKey(KeyCode.Space))
-        {   
-            if (!myAudioSource.isPlaying) 
-            { 
-             myAudioSource.Play();
+        {
+            if (!myAudioSource.isPlaying) // For Sound Overlapping Condition
+            {
+                myAudioSource.Play();
             }
             myRigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime); // it adds the force relative to the way our coordinate system is facing.
         }
         else
         {
-            myAudioSource.Stop();
+            myAudioSource.Stop(); // Stop if we dont press the space button
         }
+    }
+
+    private void Rotating(float rotationSpeed)
+    {
         if (Input.GetKey(KeyCode.A))
         {
             transform.Rotate(Vector3.forward * rotationSpeed); // we now have the time between each frame and no matter the flucutation the time frame will be same  
