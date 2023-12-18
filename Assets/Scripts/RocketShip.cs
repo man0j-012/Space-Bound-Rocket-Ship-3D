@@ -23,6 +23,25 @@ public class Rocketship : MonoBehaviour
         RocketMovement();
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.tag)
+        {
+            case "Friendly":
+                print("I am Okay");
+                break;
+            case "Finish":
+                print("Success!");
+                break;
+            case "Fuel":
+                print("Fuel has been added!");
+                break;
+            default:
+                print("dead");
+                break;
+        }
+
+    }
     private void RocketMovement()
     {
         float rotationSpeed = Time.deltaTime * rotationThrust;
