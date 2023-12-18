@@ -8,10 +8,13 @@ public class Rocketship : MonoBehaviour
     float rotationThrust = 500f;
 
     Rigidbody myRigidBody;// gravity effect
+    AudioSource myAudioSource; // Audio Source
+
     // Start is called before the first frame update
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
+        myAudioSource = GetComponent<AudioSource>();    
     }
 
     // Update is called once per frame
@@ -25,8 +28,16 @@ public class Rocketship : MonoBehaviour
         float rotationSpeed = Time.deltaTime * rotationThrust;
 
         if (Input.GetKey(KeyCode.Space))
-        {
+        {   
+            if (!myAudioSource.isPlaying) 
+            { 
+             myAudioSource.Play();
+            }
             myRigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime); // it adds the force relative to the way our coordinate system is facing.
+        }
+        else
+        {
+            myAudioSource.Stop();
         }
         if (Input.GetKey(KeyCode.A))
         {
