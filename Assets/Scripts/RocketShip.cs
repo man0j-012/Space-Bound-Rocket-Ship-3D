@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Rocketship : MonoBehaviour
 {
-    float mainThrust = 2000f;
-    float rotationThrust = 500f;
+    [SerializeField] float mainThrust = 2000f;
+    [SerializeField] float rotationThrust = 500f;
 
     Rigidbody myRigidBody;// gravity effect
     AudioSource myAudioSource; // Audio Source
@@ -48,6 +48,8 @@ public class Rocketship : MonoBehaviour
 
     private void Rotating(float rotationSpeed)
     {
+        myRigidBody.freezeRotation = true;// To fix our rotation
+
         if (Input.GetKey(KeyCode.A))
         {
             transform.Rotate(Vector3.forward * rotationSpeed); // we now have the time between each frame and no matter the flucutation the time frame will be same  
@@ -56,5 +58,11 @@ public class Rocketship : MonoBehaviour
         {
             transform.Rotate(-Vector3.forward * rotationSpeed);
         }
+
+        myRigidBody.freezeRotation = false;
+    }
+    private void LateUpdate()// after completing the update we want to reset our rocket rotation
+    {
+        transform.localEulerAngles = new Vector3(0, 0, transform.localEulerAngles.z);// this helps in moving our rocket haywire.
     }
 }
