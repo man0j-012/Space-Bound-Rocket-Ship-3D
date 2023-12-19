@@ -4,20 +4,32 @@ using UnityEngine;
 
 public class Rocketship : MonoBehaviour
 {
+    [SerializeField] int maxHealth = 100;
     [SerializeField] float mainThrust = 2000f;
     [SerializeField] float rotationThrust = 500f;
+    [SerializeField] AudioClip mainEngine, deathExplosionSFX, successLevelSFX;
+    [SerializeField] ParticleSystem mainEngineParticles,explosionParticles;
 
     Rigidbody myRigidBody;// gravity effect
     AudioSource myAudioSource; // Audio Source
     GameController gameController;
+    HealthBar myHealthBar;
+
+
     bool isAlive = true;
+    int currentHealth;
 
     // Start is called before the first frame update
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
         myAudioSource = GetComponent<AudioSource>();
-        gameController = FindAnyObjectByType<GameController>();
+
+        gameController = FindObjectOfType<GameController>();
+        myHealthBar = FindObjectOfType<HealthBar>();
+
+        currentHealth = maxHealth;
+        myHealthBar.SetMaxHealth(maxHealth);
     }
 
     // Update is called once per frame
@@ -41,16 +53,41 @@ public class Rocketship : MonoBehaviour
                 print("I am Okay");
                 break;
             case "Finish":
-                myRigidBody.isKinematic = true;
-                gameController.NextLevel(); 
+                SuccessRoutine();
                 break;
 
             default:
-                isAlive = false;
-                gameController.ResetGame();
+                TakeDamage(20);
                 break;
         }
 
+    }
+
+    private void DeathRoutine()
+    {
+        isAlive = false;
+        explosionParticles.Play();
+        AudioSource.PlayClipAtPoint(deathExplosionSFX, Camera.main.transform.position);
+        gameController.ResetGame();
+    }
+
+    private void SuccessRoutine()
+    {
+        myRigidBody.isKinematic = true;
+        AudioSource.PlayClipAtPoint(successLevelSFX, Camera.main.transform.position);
+        gameController.NextLevel();
+    }
+
+    void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+
+        myHealthBar.SetHealth(currentHealth);
+
+        if(currentHealth == 0)
+        {
+            DeathRoutine();
+        }
     }
     private void RocketMovement()
     {
@@ -65,12 +102,14 @@ public class Rocketship : MonoBehaviour
         {
             if (!myAudioSource.isPlaying) // For Sound Overlapping Condition
             {
-                myAudioSource.Play();
+                myAudioSource.PlayOneShot(mainEngine);
             }
+            mainEngineParticles.Play();
             myRigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime); // it adds the force relative to the way our coordinate system is facing.
         }
         else
-        {
+        {   
+            mainEngineParticles.Stop();
             myAudioSource.Stop(); // Stop if we dont press the space button
         }
     }
