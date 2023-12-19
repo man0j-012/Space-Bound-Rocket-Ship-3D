@@ -9,35 +9,46 @@ public class Rocketship : MonoBehaviour
 
     Rigidbody myRigidBody;// gravity effect
     AudioSource myAudioSource; // Audio Source
+    GameController gameController;
+    bool isAlive = true;
 
     // Start is called before the first frame update
     void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
-        myAudioSource = GetComponent<AudioSource>();    
+        myAudioSource = GetComponent<AudioSource>();
+        gameController = FindAnyObjectByType<GameController>();
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {   
+        if (isAlive )
+        {
+            return;
+        }
+
         RocketMovement();
     }
 
     private void OnCollisionEnter(Collision collision)
-    {
+    {   if(!isAlive || !gameController.collisionEnabled)
+        {
+            return;
+        }
         switch (collision.gameObject.tag)
         {
             case "Friendly":
                 print("I am Okay");
                 break;
             case "Finish":
-                print("Success!");
+                myRigidBody.isKinematic = true;
+                gameController.NextLevel(); 
                 break;
-            case "Fuel":
-                print("Fuel has been added!");
-                break;
+
             default:
-                print("dead");
+                isAlive = false;
+                gameController.ResetGame();
                 break;
         }
 
