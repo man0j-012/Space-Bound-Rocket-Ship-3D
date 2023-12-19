@@ -68,6 +68,8 @@ public class Rocketship : MonoBehaviour
         isAlive = false;
         explosionParticles.Play();
         AudioSource.PlayClipAtPoint(deathExplosionSFX, Camera.main.transform.position);
+
+        FindObjectOfType<ShakeCam>().ShakeCamera();
         gameController.ResetGame();
     }
 
