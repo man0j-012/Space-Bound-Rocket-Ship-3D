@@ -9,6 +9,6 @@ public class CameraRotator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(0, speed* Time.deltaTime, 0);
+        transform.Rotate(0, speed* Time.deltaTime, 0); // Rotate the camera around the Y-axis based on the specified speed.
     }
 }

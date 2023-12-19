@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class Rocketship : MonoBehaviour
 {
+    // Serialized fields allow private variables to be edited in the Unity inspector.
+
     [SerializeField] int maxHealth = 100;
     [SerializeField] float mainThrust = 2000f;
     [SerializeField] float rotationThrust = 500f;
     [SerializeField] AudioClip mainEngine, deathExplosionSFX, successLevelSFX;
     [SerializeField] ParticleSystem mainEngineParticles,explosionParticles;
 
+    // Components and variables for the rocket's functionality
     Rigidbody myRigidBody;// gravity effect
     AudioSource myAudioSource; // Audio Source
     GameController gameController;
@@ -22,6 +25,7 @@ public class Rocketship : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Getting necessary components and setting initial values.
         myRigidBody = GetComponent<Rigidbody>();
         myAudioSource = GetComponent<AudioSource>();
 
@@ -35,19 +39,20 @@ public class Rocketship : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isAlive)
+        if (isAlive) // Check if the rocket is alive, then handle movement.
         {
 
             RocketMovement();
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {   if(!isAlive || !gameController.collisionEnabled)
+    private void OnCollisionEnter(Collision collision)  // OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider.
+    {   if(!isAlive || !gameController.collisionEnabled) // Check if the rocket is not alive or if collisions are disabled, then return.
         {
             return;
         }
-        switch (collision.gameObject.tag)
+        // Check the tag of the object collided with and perform actions accordingly.
+        switch (collision.gameObject.tag)  
         {
             case "Friendly":
                 print("I am Okay");
@@ -63,30 +68,31 @@ public class Rocketship : MonoBehaviour
 
     }
 
-    private void DeathRoutine()
+    private void DeathRoutine()     // Handle actions when the rocket dies.
+
     {
         isAlive = false;
         explosionParticles.Play();
         AudioSource.PlayClipAtPoint(deathExplosionSFX, Camera.main.transform.position);
 
-        FindObjectOfType<ShakeCam>().ShakeCamera();
+        FindObjectOfType<ShakeCam>().ShakeCamera();         // Trigger camera shake and reset the game through the GameController.
         gameController.ResetGame();
     }
 
-    private void SuccessRoutine()
+    private void SuccessRoutine()     // Handle actions when the rocket successfully completes a level.
     {
         myRigidBody.isKinematic = true;
         AudioSource.PlayClipAtPoint(successLevelSFX, Camera.main.transform.position);
         gameController.NextLevel();
     }
 
-    void TakeDamage(int damage)
+    void TakeDamage(int damage)     // Handle taking damage and update health bar.
     {
         currentHealth -= damage;
 
-        myHealthBar.SetHealth(currentHealth);
+        myHealthBar.SetHealth(currentHealth);         // Check if health has reached zero, then trigger DeathRoutine.
 
-        if(currentHealth == 0)
+        if (currentHealth == 0)
         {
             DeathRoutine();
         }
