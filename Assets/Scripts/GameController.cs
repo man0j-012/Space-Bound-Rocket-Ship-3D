@@ -42,6 +42,15 @@ public class GameController : MonoBehaviour
     private IEnumerator LoadNextLevel()
     {
         yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene(1);
+
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if(nextSceneIndex == SceneManager.sceneCountInBuildSettings)
+        {
+            nextSceneIndex = 0;
+        }
+
+        SceneManager.LoadScene(nextSceneIndex);
     }
 }

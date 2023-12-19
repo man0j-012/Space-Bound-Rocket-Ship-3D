@@ -110,7 +110,7 @@ public class Rocketship : MonoBehaviour
             myRigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime); // it adds the force relative to the way our coordinate system is facing.
         }
         else
-        {   
+        {
             mainEngineParticles.Stop();
             myAudioSource.Stop(); // Stop if we dont press the space button
         }
