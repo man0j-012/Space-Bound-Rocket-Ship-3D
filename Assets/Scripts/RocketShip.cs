@@ -22,13 +22,12 @@ public class Rocketship : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {   
-        if (isAlive )
+    {
+        if (isAlive)
         {
-            return;
-        }
 
-        RocketMovement();
+            RocketMovement();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
